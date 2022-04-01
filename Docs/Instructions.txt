@@ -1,0 +1,4 @@
+﻿az group create --name RG100 --location uksouth
+az servicebus namespace create --resource-group RG100 --name CompetingConsumer --location uksouth
+az servicebus queue create --resource-group RG100 --namespace-name CompetingConsumer --name OrderQueue
+az servicebus namespace authorization-rule keys list --resource-group RG100 --namespace-name CompetingConsumer --name RootManageSharedAccessKey --query primaryConnectionString --output tsv

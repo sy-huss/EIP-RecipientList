@@ -1,35 +1,45 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
+using CompetingConsumer.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using System;
+using System.Threading.Tasks;
 
 namespace CompetingConsumer
 {
-    public static class AzureFunction
+    public class AzureFunction
     {
+        private readonly IMessageConstruction _message;
+
+        public AzureFunction(IMessageConstruction createMessage) => this._message = createMessage;
+
         [FunctionName("Sendtobus")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
-            ILogger log)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req, ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string name = req.Query["name"];
+            try
+            {
+                // Create a new Order
+                OrderApp o = new OrderApp();
+                o.CreateOrders();
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+                // Apply Transformation
+                MessageTransform m = new MessageTransform();
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
+                // Send messages asynchronously
+                await _message.CreateSendMessage(m);
 
-            return new OkObjectResult(responseMessage);
+                log.LogInformation("File completed processing");
+            }
+            catch (Exception e)
+            {
+                log.LogError(e.ToString());
+            }
+
+            return null;
         }
     }
 }
