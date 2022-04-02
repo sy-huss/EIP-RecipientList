@@ -22,7 +22,7 @@ namespace CompetingConsumer.Services
             // Clear existing Queueu
             ClearServiceBus().Wait();
 
-            // Execute 1000 messages
+            // Execute 1000000 messages
             int i = 0;
             do
             {
@@ -45,7 +45,7 @@ namespace CompetingConsumer.Services
                 }
 
                 i++;
-            } while (i < 100);
+            } while (i < 1000000);
 
             // Close connection
             await sender.DisposeAsync();
