@@ -1,4 +1,4 @@
-﻿namespace CompetingConsumer.Services
+﻿namespace RecipientList.Services
 {
     internal interface IOrderQueue
     {

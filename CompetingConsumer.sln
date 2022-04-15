@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32002.261
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CompetingConsumer", "CompetingConsumer.csproj", "{5C6CDB07-7875-4B59-BAAC-F3A021EF20C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecipientList", "RecipientList.csproj", "{5C6CDB07-7875-4B59-BAAC-F3A021EF20C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceBusReceiver", "..\ServiceBusReceiver\ServiceBusReceiver.csproj", "{FA66DB98-651D-4DF9-8B60-C2A4A3BC98F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceBusReceiver", "..\ServiceBusReceiver\ServiceBusReceiver.csproj", "{FA66DB98-651D-4DF9-8B60-C2A4A3BC98F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

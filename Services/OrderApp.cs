@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CompetingConsumer.Services
+﻿namespace RecipientList.Services
 {
     public class OrderApp : IOrderQueue
     {

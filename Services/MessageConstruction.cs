@@ -1,15 +1,14 @@
 ﻿using Azure.Messaging.ServiceBus;
 using Serilog;
 using System;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace CompetingConsumer.Services
+namespace RecipientList.Services
 {
     internal class MessageConstruction : IMessageConstruction
     {
-        private static string connectionString = Environment.GetEnvironmentVariable("ConnectionString");
-        private static string queueName = Environment.GetEnvironmentVariable("queue");
+        private static readonly string connectionString = Environment.GetEnvironmentVariable("ConnectionString");
+        private static readonly string topicName = Environment.GetEnvironmentVariable("topic");
 
         private static ServiceBusClient client;
         private static ServiceBusSender sender;
@@ -17,7 +16,7 @@ namespace CompetingConsumer.Services
         public async Task CreateSendMessage(MessageTransform m)
         {
             client = new ServiceBusClient(connectionString);
-            sender = client.CreateSender(queueName);
+            sender = client.CreateSender(topicName);
 
             // Clear existing Queueu
             ClearServiceBus().Wait();
@@ -28,11 +27,12 @@ namespace CompetingConsumer.Services
             {
                 ServiceBusMessage message = new ServiceBusMessage()
                 {
-                    MessageId = Guid.NewGuid().ToString(), // Unique ide for this message
-                    CorrelationId = $"OrderApp-{Guid.NewGuid()}", // ID used to correlat the message back to the sender if required
+                    MessageId = Guid.NewGuid().ToString(),
+                    CorrelationId = $"OrderApp-{Guid.NewGuid()}",
                     ContentType = "application/json",
                     Subject = $"Order id: {i}",
                     ReplyTo = "orderapp-100",
+                    To = "InventoryControl",
                     Body = BinaryData.FromString($"{m.MessageTransformation()}")
                 };
 
@@ -42,6 +42,7 @@ namespace CompetingConsumer.Services
                 }
                 catch (Exception e)
                 {
+                    Log.Information(e.ToString());
                 }
 
                 i++;
@@ -54,7 +55,7 @@ namespace CompetingConsumer.Services
 
         public static async Task ClearServiceBus()
         {
-            ServiceBusReceiver receiver = client.CreateReceiver(queueName, new ServiceBusReceiverOptions { ReceiveMode = ServiceBusReceiveMode.ReceiveAndDelete });
+            ServiceBusReceiver receiver = client.CreateReceiver(topicName, new ServiceBusReceiverOptions { ReceiveMode = ServiceBusReceiveMode.ReceiveAndDelete });
 
             while ((await receiver.PeekMessageAsync()) != null)
             {

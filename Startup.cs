@@ -1,10 +1,10 @@
-﻿using CompetingConsumer.Services;
-using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using RecipientList.Services;
 
-[assembly: FunctionsStartup(typeof(CompetingConsumer.Startup))]
+[assembly: FunctionsStartup(typeof(RecipientList.Startup))]
 
-namespace CompetingConsumer
+namespace RecipientList
 {
     public class Startup : FunctionsStartup
     {
